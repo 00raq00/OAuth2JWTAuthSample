@@ -16,17 +16,30 @@ namespace JWT.Controllers
     public IEnumerable<WebPageRank> Get()
     {
       var currentUser = HttpContext.User;
-      WebPageRank[] resultBookList = GetFakeData(currentUser.Claims.Where(x=>x.Type.Equals(ClaimTypes.Webpage)).FirstOrDefault().Value);
+      WebPageRank[] resultBookList = GetOwnPageRank(currentUser);
 
       return resultBookList;
     }
 
-    private static WebPageRank[] GetFakeData(string web) => new WebPageRank[] {
+    [HttpGet("{id}"), Authorize]
+    public IEnumerable<WebPageRank> Get(string id)
+    {
+      var currentUser = HttpContext.User;
+      WebPageRank[] resultBookList = GetPageRanks(id);
+
+      return resultBookList;
+    }
+
+    private static WebPageRank[] GetOwnPageRank(ClaimsPrincipal claimsPrincipal) => GetFakeData().Where(x => x.Url.Equals(claimsPrincipal.Claims.Where(y => y.Type.Equals(ClaimTypes.Webpage)).FirstOrDefault().Value, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+    private static WebPageRank[] GetPageRanks(string web) => GetFakeData().Where(x => x.Url.Contains(web)).ToArray();
+
+    private static WebPageRank[] GetFakeData() => new WebPageRank[] {
         new WebPageRank { Url = "http://test.test",Opinion="Fake page, viruses", Rank=RankEnum.Fake },
         new WebPageRank { Url = "http://test.test",Opinion="Great page", Rank=RankEnum.Great },
         new WebPageRank { Url = "http://test2.test2",Opinion="Great page", Rank=RankEnum.Great },
         new WebPageRank { Url = "http://test2.test2",Opinion="Ok", Rank=RankEnum.Standard},
         new WebPageRank { Url = "http://test2.test2",Opinion="Great page", Rank=RankEnum.Great}
-      }.Where(x => x.Url.Equals(web, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+      };
   }
 }
