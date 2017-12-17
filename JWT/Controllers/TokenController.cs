@@ -45,7 +45,6 @@ namespace JWT.Controllers
         new Claim(JwtRegisteredClaimNames.Sub, user.Name),
         new Claim(JwtRegisteredClaimNames.Email, user.Email),
         new Claim(JwtRegisteredClaimNames.Website, user.Website),
-        new Claim(JwtRegisteredClaimNames.Birthdate, user.Birthdate.ToString("yyyy-MM-dd")),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -72,11 +71,11 @@ namespace JWT.Controllers
          UserModel user = null;
          if (login.Username == "test" && login.Password == "test")
          {
-           user = new UserModel { Name = "Test Test", Email = "test.test@test.test", Website = "http://test.test", Birthdate = new DateTime(1900, 01, 01) };
+           user = new UserModel { Name = "Test Test", Email = "test.test@test.test", Website = "http://test.test"};
          }
          else if (login.Username == "test2" && login.Password == "test2")
          {
-           user = new UserModel { Name = "Test Test", Email = "test2.test2@test2.test2", Website = "http://test2.test2", Birthdate = new DateTime(1900, 01, 01) };
+           user = new UserModel { Name = "Test Test", Email = "test2.test2@test2.test2", Website = "http://test2.test2"};
          }
 
          return user;
